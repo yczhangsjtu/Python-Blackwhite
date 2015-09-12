@@ -1,4 +1,5 @@
 from Tkinter import *
+from time import sleep
 
 root = Tk()
 
@@ -50,6 +51,42 @@ def mouseclick(event):
         array[x][y] = side
         side = 3 - side
         work(x,y)
+        draw()
+        computerMove()
+
+def computerMove():
+    if not started: return
+    global side
+    maxchange, maxx, maxy = 0, -1, -1
+    for x in range(ngrid):
+        for y in range(ngrid):
+            if array[x][y]!=0: continue
+            count = 0
+            for dirx in range(-1,2):
+                for diry in range(-1,2):
+                    bx, by = x, y
+                    if dirx == 0 and diry == 0: continue
+                    c = 0
+                    while True:
+                        bx = bx + dirx
+                        by = by + diry
+                        if bx < 0 or bx >= ngrid or by < 0 or by >= ngrid:
+                            break
+                        if array[bx][by] == 0:
+                            break
+                        if array[bx][by] == side:
+                            count += c
+                            break
+                        else:
+                            c += 1
+            if count >= maxchange:
+                maxchange = count
+                maxx, maxy = x, y
+    if maxx == -1 or maxy == -1:
+        return
+    array[maxx][maxy] = side
+    side = 3 - side
+    work(maxx,maxy)
     draw()
 
 def work(x,y):
@@ -83,10 +120,12 @@ started = False
 side = 1
 rframe = Frame(root)
 start = Button(rframe,text="Start",command=gamestart)
+comp = Button(rframe,text="Computer",command=computerMove)
 exit  = Button(rframe,text="Exit",command=gameexit)
 canvas = Canvas(root,width=winsize,height=winsize)
 
 start.pack(side=BOTTOM)
+comp.pack(side=BOTTOM)
 exit.pack(side=BOTTOM)
 canvas.pack(side=LEFT)
 rframe.pack(side=LEFT)
