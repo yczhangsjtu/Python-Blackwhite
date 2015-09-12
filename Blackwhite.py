@@ -52,7 +52,7 @@ def mouseclick(event):
         side = 3 - side
         work(x,y)
         draw()
-        computerMove()
+        root.after(500,computerMove)
 
 def computerMove():
     if not started: return
